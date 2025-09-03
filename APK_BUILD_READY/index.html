@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="FiFTO TV">
+    
+    <title>FiFTO TV - JioTV Streaming</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        /* Custom styling for FiFTO TV */
+        .channel-icon {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .tabs-boxed {
+            background-color: hsl(var(--b2));
+            border-radius: var(--rounded-box);
+            padding: 0.5rem;
+        }
+        
+        .tab {
+            border-radius: var(--rounded-btn);
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tab-active {
+            background-color: hsl(var(--p));
+            color: hsl(var(--pc));
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-outline {
+            border: 1px solid currentColor;
+            background: transparent;
+        }
+        
+        .channel-category h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        
+        .favorite-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .favorite-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+        
+        .channel-category {
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card:active {
+            transform: scale(0.95);
+        }
+        
+        /* TV Remote Navigation Support */
+        .card:focus {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+        
+        .tab:focus {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                </svg>
+                <h1 class="text-2xl font-bold">FiFTO</h1>
+            </div>
+            <div class="flex space-x-4">
+                <button class="bg-white bg-opacity-20 px-4 py-2 rounded-lg hover:bg-opacity-30 transition-all">
+                    Theme
+                </button>
+                <button class="bg-white bg-opacity-20 px-4 py-2 rounded-lg hover:bg-opacity-30 transition-all">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-6">
+        <!-- Search and Filter -->
+        <div class="mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" 
+                       id="searchInput" 
+                       placeholder="Search channels..." 
+                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="clearSearch()" 
+                        class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Access Tabs -->
+        <div class="tabs tabs-boxed bg-base-200 mb-6 mx-2">
+            <a class="tab tab-active" onclick="showCategory('favorites')">Favorites</a>
+            <a class="tab" onclick="showCategory('tamil')">Tamil</a>
+            <a class="tab" onclick="showCategory('english')">English</a>
+            <a class="tab" onclick="showCategory('news')">News</a>
+            <a class="tab" onclick="showCategory('sports')">Sports</a>
+            <a class="tab" onclick="showCategory('entertainment')">Entertainment</a>
+        </div>
+
+        <!-- Channel Count -->
+        <div class="text-center mb-6">
+            <span id="channelCount" class="text-lg font-semibold text-gray-600">Loading channels...</span>
+        </div>
+
+        <!-- Channel Categories -->
+        <div id="channelCategories">
+            <!-- Favorites Section -->
+            <div id="favorites" class="channel-category">
+                <h2>⭐ Favorites</h2>
+                <div id="favorites-grid" class="grid"></div>
+            </div>
+
+            <!-- Tamil Section -->
+            <div id="tamil" class="channel-category">
+                <h2>🇮🇳 Tamil Channels</h2>
+                <div id="tamil-grid" class="grid"></div>
+            </div>
+
+            <!-- English Section -->
+            <div id="english" class="channel-category">
+                <h2>🇺🇸 English Channels</h2>
+                <div id="english-grid" class="grid"></div>
+            </div>
+
+            <!-- News Section -->
+            <div id="news" class="channel-category">
+                <h2>📰 News Channels</h2>
+                <div id="news-grid" class="grid"></div>
+            </div>
+
+            <!-- Sports Section -->
+            <div id="sports" class="channel-category">
+                <h2>⚽ Sports Channels</h2>
+                <div id="sports-grid" class="grid"></div>
+            </div>
+
+            <!-- Entertainment Section -->
+            <div id="entertainment" class="channel-category">
+                <h2>🎬 Entertainment Channels</h2>
+                <div id="entertainment-grid" class="grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Sample channel data (replace with your actual data)
+        const sampleChannels = [
+            {
+                id: 1,
+                name: "Sun TV",
+                logo: "https://via.placeholder.com/80x80/FF6B6B/FFFFFF?text=Sun+TV",
+                language: "tamil",
+                category: "entertainment",
+                isFavorite: false
+            },
+            {
+                id: 2,
+                name: "Vijay TV",
+                logo: "https://via.placeholder.com/80x80/4ECDC4/FFFFFF?text=Vijay+TV",
+                language: "tamil",
+                category: "entertainment",
+                isFavorite: false
+            },
+            {
+                id: 3,
+                name: "CNN",
+                logo: "https://via.placeholder.com/80x80/45B7D1/FFFFFF?text=CNN",
+                language: "english",
+                category: "news",
+                isFavorite: false
+            },
+            {
+                id: 4,
+                name: "ESPN",
+                logo: "https://via.placeholder.com/80x80/96CEB4/FFFFFF?text=ESPN",
+                language: "english",
+                category: "sports",
+                isFavorite: false
+            },
+            {
+                id: 5,
+                name: "BBC News",
+                logo: "https://via.placeholder.com/80x80/FFEAA7/000000?text=BBC",
+                language: "english",
+                category: "news",
+                isFavorite: false
+            }
+        ];
+
+        let channels = [...sampleChannels];
+        let currentCategory = 'favorites';
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('FiFTO TV Android App Loaded!');
+            loadChannels();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                filterChannels(this.value);
+            });
+
+            // TV remote navigation support
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (document.activeElement) {
+                        document.activeElement.click();
+                    }
+                }
+            });
+        }
+
+        function loadChannels() {
+            // Load favorites from localStorage
+            const favorites = JSON.parse(localStorage.getItem('fiftoFavorites') || '[]');
+            channels.forEach(channel => {
+                channel.isFavorite = favorites.includes(channel.id);
+            });
+
+            displayChannels();
+            updateChannelCount();
+        }
+
+        function displayChannels() {
+            // Clear all grids
+            document.querySelectorAll('.grid').forEach(grid => grid.innerHTML = '');
+
+            // Process each channel
+            channels.forEach(channel => {
+                const channelCard = createChannelCard(channel);
+                
+                // Add to appropriate category
+                if (channel.isFavorite) {
+                    document.getElementById('favorites-grid').appendChild(channelCard.cloneNode(true));
+                }
+                
+                if (channel.language === 'tamil') {
+                    document.getElementById('tamil-grid').appendChild(channelCard.cloneNode(true));
+                }
+                
+                if (channel.language === 'english') {
+                    document.getElementById('english-grid').appendChild(channelCard.cloneNode(true));
+                }
+                
+                if (channel.category === 'news') {
+                    document.getElementById('news-grid').appendChild(channelCard.cloneNode(true));
+                }
+                
+                if (channel.category === 'sports') {
+                    document.getElementById('sports-grid').appendChild(channelCard.cloneNode(true));
+                }
+                
+                if (channel.category === 'entertainment') {
+                    document.getElementById('entertainment-grid').appendChild(channelCard.cloneNode(true));
+                }
+            });
+        }
+
+        function createChannelCard(channel) {
+            const card = document.createElement('div');
+            card.className = 'card p-4 text-center relative';
+            card.tabIndex = 0; // Make focusable for TV remote
+            card.setAttribute('data-channel-id', channel.id);
+            
+            card.innerHTML = `
+                <button class="favorite-btn" onclick="toggleFavorite(${channel.id})">
+                    ${channel.isFavorite ? '★' : '☆'}
+                </button>
+                <img src="${channel.logo}" alt="${channel.name}" class="channel-icon mx-auto mb-3">
+                <h3 class="font-semibold text-sm mb-2">${channel.name}</h3>
+                <div class="flex justify-center space-x-1">
+                    <span class="badge badge-outline">${channel.language}</span>
+                    <span class="badge badge-outline">${channel.category}</span>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => playChannel(channel));
+            
+            return card;
+        }
+
+        function toggleFavorite(channelId) {
+            const favorites = JSON.parse(localStorage.getItem('fiftoFavorites') || '[]');
+            const index = favorites.indexOf(channelId);
+            
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                favorites.push(channelId);
+            }
+            
+            localStorage.setItem('fiftoFavorites', JSON.stringify(favorites));
+            
+            // Update channel data
+            const channel = channels.find(c => c.id === channelId);
+            if (channel) {
+                channel.isFavorite = !channel.isFavorite;
+            }
+            
+            // Refresh display
+            displayChannels();
+            updateChannelCount();
+        }
+
+        function showCategory(category) {
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('tab-active'));
+            event.target.classList.add('tab-active');
+            
+            currentCategory = category;
+            
+            // Scroll to category
+            document.getElementById(category).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function filterChannels(searchTerm) {
+            const filtered = channels.filter(channel => 
+                channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                channel.language.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                channel.category.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            displayFilteredChannels(filtered);
+            updateChannelCount(filtered.length);
+        }
+
+        function displayFilteredChannels(filteredChannels) {
+            // Clear all grids
+            document.querySelectorAll('.grid').forEach(grid => grid.innerHTML = '');
+            
+            // Show filtered channels in favorites section
+            const favoritesGrid = document.getElementById('favorites-grid');
+            favoritesGrid.innerHTML = '';
+            
+            filteredChannels.forEach(channel => {
+                const channelCard = createChannelCard(channel);
+                favoritesGrid.appendChild(channelCard);
+            });
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            displayChannels();
+            updateChannelCount();
+        }
+
+        function updateChannelCount(count = channels.length) {
+            document.getElementById('channelCount').textContent = `Showing ${count} channels`;
+        }
+
+        function playChannel(channel) {
+            // Simulate channel playback
+            alert(`🎬 Now playing: ${channel.name}\n\nThis is a demo. In the real app, this would stream the channel.`);
+        }
+
+        // TV Remote Navigation Enhancement
+        function focusNextElement() {
+            const focusableElements = document.querySelectorAll('button, a, input, [tabindex]:not([tabindex="-1"])');
+            const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
+            const nextIndex = (currentIndex + 1) % focusableElements.length;
+            focusableElements[nextIndex].focus();
+        }
+
+        function focusPreviousElement() {
+            const focusableElements = document.querySelectorAll('button, a, input, [tabindex]:not([tabindex="-1"])');
+            const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
+            const prevIndex = currentIndex === 0 ? focusableElements.length - 1 : currentIndex - 1;
+            focusableElements[prevIndex].focus();
+        }
+
+        // Add keyboard navigation for TV remote
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'ArrowRight':
+                    e.preventDefault();
+                    focusNextElement();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    focusPreviousElement();
+                    break;
+                case 'ArrowUp':
+                case 'ArrowDown':
+                    e.preventDefault();
+                    // Let default behavior handle vertical navigation
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
