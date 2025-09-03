@@ -1,32 +1,110 @@
 {
-  "name": "JioTV Go",
-  "short_name": "JioTV Go",
-  "id": "/",
+  "name": "FiFTO TV Go",
+  "short_name": "FiFTO TV",
+  "description": "Stream JioTV channels with FiFTO TV interface - Favorites at the top, Tamil, English, News, Sports, and Entertainment categories",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
-  "orientation": "any",
-  "categories": [
-    "entertainment",
-    "lifestyle",
-    "news",
-    "audio-video"
-  ],
+  "background_color": "#1e293b",
+  "theme_color": "#667eea",
+  "orientation": "landscape",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["entertainment", "media", "tv"],
   "icons": [
     {
-      "src": "/static/icons/icon-small.webp",
-      "sizes": "48x48",
-      "type": "image/webp"
+      "src": "/static/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/static/icons/icon-medium.png",
-      "sizes": "72x72 96x96 128x128 256x256",
-      "type": "image/png"
+      "src": "/static/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/static/icons/icon-high.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/static/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Favorites",
+      "short_name": "Fav",
+      "description": "View your favorite channels",
+      "url": "/?category=favorites",
+      "icons": [
+        {
+          "src": "/static/icons/favorites-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Tamil Channels",
+      "short_name": "Tamil",
+      "description": "Browse Tamil language channels",
+      "url": "/?category=tamil",
+      "icons": [
+        {
+          "src": "/static/icons/tamil-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "English Channels",
+      "short_name": "English",
+      "description": "Browse English language channels",
+      "url": "/?category=english",
+      "icons": [
+        {
+          "src": "/static/icons/english-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/screenshots/tv-landscape.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "FiFTO TV Main Interface"
     }
   ]
 }
