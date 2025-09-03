@@ -110,7 +110,12 @@ func IndexHandler(c *fiber.Ctx) error {
 	category := c.Query("category")
 
 	// Process logo URLs for all channels
-	hostURL := c.Protocol() + "://" + c.Hostname()
+	hostname := c.Hostname()
+	if hostname == "" {
+		// Fallback to localhost:5001 if hostname is empty
+		hostname = "127.0.0.1:5001"
+	}
+	hostURL := c.Protocol() + "://" + hostname
 	for i, channel := range channels.Result {
 		if strings.HasPrefix(channel.LogoURL, "http://") || strings.HasPrefix(channel.LogoURL, "https://") {
 			// Custom channel with full URL, use as-is
@@ -252,10 +257,10 @@ func LiveQualityHandler(c *fiber.Ctx) error {
 	if id == "1349" || id == "1322" {
 		quality = "auto"
 	}
-	
+
 	// select quality level based on query parameter
 	liveURL := internalUtils.SelectQuality(quality, Bitrates.Auto, Bitrates.High, Bitrates.Medium, Bitrates.Low)
-	
+
 	// quote url as it will be passed as a query parameter
 	coded_url, err := secureurl.EncryptURL(liveURL)
 	if err != nil {
@@ -428,7 +433,12 @@ func ChannelsHandler(c *fiber.Ctx) error {
 	skipGenres := strings.TrimSpace(c.Query("sg"))
 	apiResponse := television.Channels()
 	// hostUrl should be request URL like http://localhost:5001
-	hostURL := strings.ToLower(c.Protocol()) + "://" + c.Hostname()
+	hostname := c.Hostname()
+	if hostname == "" {
+		// Fallback to localhost:5001 if hostname is empty
+		hostname = "127.0.0.1:5001"
+	}
+	hostURL := strings.ToLower(c.Protocol()) + "://" + hostname
 
 	// Check if the query parameter "type" is set to "m3u"
 	if c.Query("type") == "m3u" {

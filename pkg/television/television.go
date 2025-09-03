@@ -297,7 +297,7 @@ func LoadCustomChannels(filePath string) ([]Channel, error) {
 		utils.SafeLogf("Custom channels file not found: %s", filePath)
 		return []Channel{}, nil
 	}
-	
+
 	if fileResult.Error != nil {
 		return nil, fileResult.Error
 	}
@@ -316,7 +316,7 @@ func LoadCustomChannels(filePath string) ([]Channel, error) {
 		if !strings.HasPrefix(channelID, "cc_") {
 			channelID = "cc_" + channelID
 		}
-		
+
 		channel := Channel{
 			ID:       channelID,
 			Name:     customChannel.Name,
@@ -352,13 +352,13 @@ func Channels() ChannelsResponse {
 
 	// Set up request headers
 	requestHeaders := map[string]string{
-		headers.UserAgent:   headers.UserAgentOkHttp,
-		headers.Accept:      headers.AcceptJSON,
-		headers.DeviceType:  headers.DeviceTypePhone,
-		headers.OS:          headers.OSAndroid,
-		"appkey":            "NzNiMDhlYzQyNjJm",
-		"lbcookie":          "1",
-		"usertype":          "JIO",
+		headers.UserAgent:  headers.UserAgentOkHttp,
+		headers.Accept:     headers.AcceptJSON,
+		headers.DeviceType: headers.DeviceTypePhone,
+		headers.OS:         headers.OSAndroid,
+		"appkey":           "NzNiMDhlYzQyNjJm",
+		"lbcookie":         "1",
+		"usertype":         "JIO",
 	}
 
 	// Make the HTTP request
@@ -466,7 +466,7 @@ func ReplaceM3U8(baseUrl, match []byte, params, channel_id string) []byte {
 		ChannelID:   channel_id,
 		EndpointURL: "/render.m3u8",
 	}
-	
+
 	result, err := CreateEncryptedURL(config)
 	if err != nil {
 		return nil
@@ -478,14 +478,14 @@ func ReplaceTS(baseUrl, match []byte, params string) []byte {
 	if config.Cfg.DisableTSHandler {
 		return []byte(string(baseUrl) + string(match) + "?" + params)
 	}
-	
+
 	config := EncryptedURLConfig{
 		BaseURL:     string(baseUrl),
 		Match:       string(match),
 		Params:      params,
 		EndpointURL: "/render.ts",
 	}
-	
+
 	result, err := CreateEncryptedURL(config)
 	if err != nil {
 		return nil
@@ -497,14 +497,14 @@ func ReplaceAAC(baseUrl, match []byte, params string) []byte {
 	if config.Cfg.DisableTSHandler {
 		return []byte(string(baseUrl) + string(match) + "?" + params)
 	}
-	
+
 	config := EncryptedURLConfig{
 		BaseURL:     string(baseUrl),
 		Match:       string(match),
 		Params:      params,
 		EndpointURL: "/render.ts",
 	}
-	
+
 	result, err := CreateEncryptedURL(config)
 	if err != nil {
 		return nil
@@ -520,7 +520,7 @@ func ReplaceKey(match []byte, params, channel_id string) []byte {
 		ChannelID:   channel_id,
 		EndpointURL: "/render.key",
 	}
-	
+
 	result, err := CreateEncryptedURL(config)
 	if err != nil {
 		return nil
