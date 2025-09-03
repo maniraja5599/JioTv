@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log" // Added import for *log.Logger type
 	"net/http"
+	"os/exec"
+	"runtime"
+	"time"
 
 	"github.com/jiotv-go/jiotv_go/v3/internal/config"
 	"github.com/jiotv-go/jiotv_go/v3/internal/constants"
@@ -130,12 +133,45 @@ func JioTVServer(jiotvServerConfig JioTVServerConfig) error {
 	app.Get("/render.mpd", handlers.MpdHandler)
 	app.Use("/render.dash", handlers.DashHandler)
 
+	// Function to open browser automatically
+	openBrowser := func(host, port string) {
+		// Wait a bit for the server to start
+		time.Sleep(1 * time.Second)
+		
+		url := fmt.Sprintf("http://%s:%s", host, port)
+		if host == "[::]" {
+			url = fmt.Sprintf("http://localhost:%s", port)
+		}
+		
+		var cmd *exec.Cmd
+		switch runtime.GOOS {
+		case "windows":
+			cmd = exec.Command("cmd", "/c", "start", url)
+		case "darwin":
+			cmd = exec.Command("open", url)
+		default: // linux, freebsd, openbsd, netbsd
+			cmd = exec.Command("xdg-open", url)
+		}
+		
+		// Try to open browser, but don't fail if it doesn't work
+		if err := cmd.Start(); err != nil {
+			utils.Log.Printf("INFO: Could not automatically open browser: %v", err)
+			utils.Log.Printf("INFO: Please manually open: %s", url)
+		} else {
+			utils.Log.Printf("INFO: Automatically opened browser to: %s", url)
+		}
+	}
+
 	if jiotvServerConfig.TLS {
 		if jiotvServerConfig.TLSCertPath == "" || jiotvServerConfig.TLSKeyPath == "" {
 			return fmt.Errorf("TLS cert and key paths are required for HTTPS. Please provide them using --tls-cert and --tls-key flags")
 		}
+		// Start browser opening in background for TLS
+		go openBrowser(jiotvServerConfig.Host, jiotvServerConfig.Port)
 		return app.ListenTLS(fmt.Sprintf("%s:%s", jiotvServerConfig.Host, jiotvServerConfig.Port), jiotvServerConfig.TLSCertPath, jiotvServerConfig.TLSKeyPath)
 	} else {
+		// Start browser opening in background for HTTP
+		go openBrowser(jiotvServerConfig.Host, jiotvServerConfig.Port)
 		return app.Listen(fmt.Sprintf("%s:%s", jiotvServerConfig.Host, jiotvServerConfig.Port))
 	}
 }
