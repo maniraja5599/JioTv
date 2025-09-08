@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FiFTO TV - JioTV Streaming</title>
+    <title>FiFTO TV - JioTV Streaming APK</title>
+    <meta name="description" content="FiFTO TV - Stream JioTV channels with Home button and Casting support">
+    <meta name="theme-color" content="#667eea">
+    <link rel="manifest" href="manifest.json">
     <style>
         * {
             margin: 0;
@@ -15,8 +18,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            color: white;
         }
         
         .navbar {
@@ -26,6 +28,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
         .logo {
@@ -39,6 +44,7 @@
         .nav-buttons {
             display: flex;
             gap: 0.5rem;
+            align-items: center;
         }
         
         .btn {
@@ -49,6 +55,9 @@
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .btn:hover {
@@ -64,6 +73,7 @@
             border-radius: 0.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
         
         .home-btn:hover {
@@ -71,22 +81,18 @@
         }
         
         .container {
-            flex: 1;
             padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .hero {
             text-align: center;
-            color: white;
+            margin-bottom: 3rem;
         }
         
-        .welcome {
-            margin-bottom: 2rem;
-        }
-        
-        .welcome h1 {
-            font-size: 2.5rem;
+        .hero h1 {
+            font-size: 3rem;
             margin-bottom: 1rem;
             background: linear-gradient(45deg, #fbbf24, #f59e0b);
             -webkit-background-clip: text;
@@ -94,23 +100,25 @@
             background-clip: text;
         }
         
-        .welcome p {
-            font-size: 1.2rem;
+        .hero p {
+            font-size: 1.3rem;
             opacity: 0.9;
             margin-bottom: 2rem;
         }
         
-        .server-info {
+        .server-card {
             background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 1rem;
             margin-bottom: 2rem;
             backdrop-filter: blur(10px);
+            text-align: center;
         }
         
-        .server-info h3 {
-            margin-bottom: 1rem;
+        .server-card h3 {
             color: #fbbf24;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
         }
         
         .server-url {
@@ -121,38 +129,70 @@
             font-size: 1.1rem;
             margin: 1rem 0;
             word-break: break-all;
+            border: 2px solid #fbbf24;
+        }
+        
+        .open-btn {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #1e3a8a;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .open-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
         }
         
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
         }
         
         .feature {
             background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 1rem;
             backdrop-filter: blur(10px);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
         
         .feature h4 {
             color: #fbbf24;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
         }
         
         .instructions {
             background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 1rem;
-            margin-top: 2rem;
+            margin-top: 3rem;
             backdrop-filter: blur(10px);
         }
         
         .instructions h3 {
             color: #fbbf24;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
         }
         
         .instructions ol {
@@ -161,11 +201,23 @@
         }
         
         .instructions li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        .status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
         }
         
         @media (max-width: 768px) {
-            .welcome h1 {
+            .hero h1 {
                 font-size: 2rem;
             }
             
@@ -175,6 +227,14 @@
             
             .features {
                 grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                padding: 0.5rem;
+            }
+            
+            .nav-buttons {
+                gap: 0.25rem;
             }
         }
     </style>
@@ -213,69 +273,95 @@
     </nav>
 
     <div class="container">
-        <div class="welcome">
+        <div class="hero">
             <h1>🎬 FiFTO TV</h1>
-            <p>Your Gateway to JioTV Streaming</p>
+            <p>Your Premium JioTV Streaming Experience</p>
         </div>
 
-        <div class="server-info">
-            <h3>📡 Server Information</h3>
-            <p>To access the full JioTV Go interface, make sure the server is running and visit:</p>
+        <div class="server-card">
+            <h3>📡 Connect to JioTV Go Server</h3>
+            <p>Make sure the JioTV Go server is running and click the button below to access the full interface:</p>
             <div class="server-url" id="serverUrl">http://192.168.1.113:5001</div>
-            <button onclick="openServer()" style="background: #fbbf24; color: #1e3a8a; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">
-                Open JioTV Go
+            <button class="open-btn" onclick="openServer()">
+                🚀 Open JioTV Go
             </button>
         </div>
 
         <div class="features">
             <div class="feature">
-                <h4>🏠 Home Button</h4>
-                <p>Quick navigation back to the main channel list</p>
+                <div class="feature-icon">🏠</div>
+                <h4>Home Button</h4>
+                <p>Quick navigation back to the main channel list. No icon, just clean text as requested.</p>
             </div>
             <div class="feature">
-                <h4>📺 Cast Support</h4>
-                <p>Stream content to Chromecast and Android TV devices</p>
+                <div class="feature-icon">📺</div>
+                <h4>Cast Support</h4>
+                <p>Stream content to Chromecast, Android TV, and other Cast-enabled devices with one click.</p>
             </div>
             <div class="feature">
-                <h4>📱 Mobile Friendly</h4>
-                <p>Optimized interface for all device sizes</p>
+                <div class="feature-icon">📱</div>
+                <h4>Mobile Optimized</h4>
+                <p>Responsive design that works perfectly on phones, tablets, and Android TV devices.</p>
             </div>
             <div class="feature">
-                <h4>🎨 Theme Toggle</h4>
-                <p>Switch between light and dark themes</p>
+                <div class="feature-icon">🎨</div>
+                <h4>Theme Toggle</h4>
+                <p>Switch between light and dark themes for comfortable viewing in any environment.</p>
             </div>
         </div>
 
         <div class="instructions">
-            <h3>📋 How to Use</h3>
+            <h3>📋 How to Use FiFTO TV</h3>
             <ol>
-                <li>Make sure the JioTV Go server is running on your computer</li>
-                <li>Click "Open JioTV Go" button above to access the full interface</li>
-                <li>Use the Home button to navigate back to the main page</li>
-                <li>Use the Cast button to stream to your TV (requires Chrome browser)</li>
-                <li>Toggle between light and dark themes as needed</li>
+                <li><strong>Start the Server:</strong> Make sure JioTV Go server is running on your computer</li>
+                <li><strong>Connect:</strong> Click "Open JioTV Go" button to access the full streaming interface</li>
+                <li><strong>Navigate:</strong> Use the Home button to quickly return to the main channel list</li>
+                <li><strong>Cast:</strong> Use the Cast button to stream content to your TV (requires Chrome browser)</li>
+                <li><strong>Customize:</strong> Toggle between light and dark themes for your preferred viewing experience</li>
+                <li><strong>Enjoy:</strong> Stream your favorite JioTV channels with the enhanced FiFTO TV interface!</li>
             </ol>
         </div>
     </div>
 
+    <div class="status" id="status">
+        ✅ FiFTO TV Ready
+    </div>
+
     <script>
+        // Configuration
+        const SERVER_IP = '192.168.1.113';
+        const SERVER_PORT = '5001';
+        
         // Get the current IP address
         function getCurrentIP() {
-            // This will be replaced with the actual server IP when the app loads
-            return '192.168.1.113';
+            return SERVER_IP;
         }
 
         // Update server URL
         function updateServerUrl() {
             const serverUrl = document.getElementById('serverUrl');
             const ip = getCurrentIP();
-            serverUrl.textContent = `http://${ip}:5001`;
+            serverUrl.textContent = `http://${ip}:${SERVER_PORT}`;
         }
 
         // Open the server URL
         function openServer() {
             const ip = getCurrentIP();
-            window.open(`http://${ip}:5001`, '_blank');
+            const url = `http://${ip}:${SERVER_PORT}`;
+            
+            // Try to open in new tab
+            const newWindow = window.open(url, '_blank');
+            
+            if (!newWindow) {
+                // Fallback: copy URL to clipboard
+                navigator.clipboard.writeText(url).then(() => {
+                    showStatus('📋 URL copied to clipboard!');
+                }).catch(() => {
+                    showStatus('❌ Please manually open: ' + url);
+                });
+            } else {
+                showStatus('🚀 Opening JioTV Go...');
+            }
         }
 
         // Go home function
@@ -286,7 +372,7 @@
         // Theme toggle
         function toggleTheme() {
             document.body.classList.toggle('dark-theme');
-            // You can add more theme logic here
+            showStatus('🎨 Theme toggled!');
         }
 
         // Cast functionality
@@ -298,8 +384,9 @@
                 castApi = window.chrome.cast;
                 const castButton = document.getElementById('castButton');
                 if (castButton) {
-                    castButton.style.display = 'block';
+                    castButton.style.display = 'flex';
                 }
+                showStatus('📺 Cast ready!');
             } else {
                 const castButton = document.getElementById('castButton');
                 if (castButton) {
@@ -310,7 +397,7 @@
 
         function toggleCast() {
             if (!castApi) {
-                alert('Casting is not available in this browser. Please use Chrome or a Chromium-based browser.');
+                showStatus('❌ Cast not available. Use Chrome browser.');
                 return;
             }
 
@@ -318,6 +405,7 @@
                 castSession.stop(() => {
                     castSession = null;
                     updateCastButton(false);
+                    showStatus('📺 Cast stopped');
                 });
             } else {
                 castApi.requestSession((session) => {
@@ -327,9 +415,11 @@
                     const mediaInfo = new castApi.media.MediaInfo(window.location.href, 'text/html');
                     const request = new castApi.media.LoadRequest(mediaInfo);
                     session.loadMedia(request);
+                    
+                    showStatus('📺 Casting started!');
                 }, (error) => {
                     console.error('Cast error:', error);
-                    alert('Failed to start casting: ' + error.description);
+                    showStatus('❌ Cast failed: ' + error.description);
                 });
             }
         }
@@ -347,12 +437,37 @@
             }
         }
 
+        // Status display
+        function showStatus(message) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             updateServerUrl();
             initializeCast();
+            showStatus('✅ FiFTO TV Ready');
             console.log('FiFTO TV Android App Loaded!');
         });
+
+        // Service Worker registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
