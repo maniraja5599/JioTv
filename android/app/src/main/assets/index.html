@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="FiFTO TV">
+    
+    <title>FiFTO TV - JioTV Streaming</title>
+    
+    <!-- Include your CSS -->
+    <link href="styling.html" rel="stylesheet">
+</head>
+<body>
+    <!-- Include your HTML templates -->
+    <div id="navbar-container"></div>
+    <div id="main-container"></div>
+    
+    <!-- Include your JavaScript -->
+    <script src="internal\utils.js"></script>
+    <script src="internal\channels.js"></script>
+    <script src="internal\common.js"></script>
+    
+    <script>
+        // Load templates
+        fetch('navbar.html').then(r => r.text()).then(html => {
+            document.getElementById('navbar-container').innerHTML = html;
+        });
+        
+        fetch('channel_list.html').then(r => r.text()).then(html => {
+            document.getElementById('main-container').innerHTML = html;
+        });
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('FiFTO TV Android App Loaded!');
+        });
+    </script>
+</body>
+</html>
